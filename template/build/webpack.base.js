@@ -9,7 +9,7 @@ const assetsPath = function (_path) {
 module.exports = {
   context: resolve(__dirname, '../src'),
   entry: {
-    main: './index.js'
+    main: './app.js'
   },
   output: {
     path: resolve(__dirname, '../dist'),
