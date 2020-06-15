@@ -2,6 +2,9 @@
   "name": "mithril-starter-kit",
   "version": "1.0.0",
   "description": "Quick start for mithril with jsx, es6, webpack 4, stylus, hot reload and eslint (standard)",
+  "scripts": {
+    "update": "./utils/update-template.sh"
+  },
   "keywords": [
     "mithril",
     "mithril.js"

@@ -27,12 +27,13 @@ exports.sortDependencies = function sortDependencies(data) {
  */
 exports.installDependencies = function installDependencies(
   cwd,
-  executable = 'yarn',
+  data,
   color
 ) {
   console.log(`\n\n# ${color('Installing project dependencies ...')}`)
   console.log('# ========================\n')
-  return runCommand(executable, [], {
+  let args = data.autoInstall === 'npm' ? ['i'] : []
+  return runCommand(data.autoInstall, args, {
     cwd,
   })
 }
@@ -61,6 +62,21 @@ exports.runLintFix = function runLintFix(cwd, data, color) {
   return Promise.resolve()
 }
 
+exports.runAuditFix = function runAuditFix(cwd, data, color) {
+  if (data.autoInstall === 'npm') {
+    console.log(
+      `\n\n${color(
+        'Running audit fix for npm'
+      )}`
+    )
+    console.log('# ========================\n')
+    return runCommand(data.autoInstall, ['audit', 'fix'], {
+      cwd,
+    })
+  }
+  return Promise.resolve()
+}
+
 /**
  * Prints the final message with instructions of necessary next steps.
  * @param {Object} data Data from questionnaire.
@@ -75,7 +91,7 @@ To get started:
   ${yellow(
     `${data.inPlace ? '' : `cd ${data.destDirName}\n  `}${installMsg(
       data
-    )}${lintMsg(data)}yarn dev`
+    )}${lintMsg(data)}npm start`
   )}
 
 Documentation can be found at https://vuejs-templates.github.io/webpack
@@ -92,7 +108,7 @@ function lintMsg(data) {
   return !data.autoInstall &&
     data.lint &&
     lintStyles.indexOf(data.lintConfig) !== -1
-    ? 'yarn lint -- --fix (or for npm: npm run lint -- --fix)\n  '
+    ? 'yarn lint:js -- --fix (or for npm: npm run lint:js -- --fix)\n  '
     : ''
 }
 

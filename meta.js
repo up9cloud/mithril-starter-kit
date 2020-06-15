@@ -4,6 +4,7 @@ const {
   sortDependencies,
   installDependencies,
   runLintFix,
+  runAuditFix,
   printMessage,
 } = require('./utils')
 const pkg = require('./package.json')
@@ -32,19 +33,19 @@ module.exports = {
     },
     autoInstall: {
       type: 'list',
-      default: 'yarn',
+      default: 'npm',
       message:
-        'Should we run `yarn` for you after the project has been created? (recommended)',
+        'Should we install dependencies for you after the project has been created? (recommended)',
       choices: [
-        {
-          name: 'Yes, use Yarn',
-          value: 'yarn',
-          short: 'yarn',
-        },
         {
           name: 'Yes, use NPM',
           value: 'npm',
           short: 'npm',
+        },
+        {
+          name: 'Yes, use Yarn',
+          value: 'yarn',
+          short: 'yarn',
         },
         {
           name: 'No, I will handle that myself',
@@ -64,10 +65,9 @@ module.exports = {
     const cwd = path.join(process.cwd(), data.inPlace ? '' : data.destDirName)
 
     if (data.autoInstall) {
-      installDependencies(cwd, data.autoInstall, green)
-        .then(() => {
-          return runLintFix(cwd, data, green)
-        })
+      installDependencies(cwd, data, green)
+        .then(() => runLintFix(cwd, data, green))
+        .then(() => runAuditFix(cwd, data, green))
         .then(() => {
           printMessage(data, green)
         })
